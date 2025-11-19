@@ -24,10 +24,10 @@
 erDiagram
 
 
-    user {
+    users {
         UUID id PK "사용자 고유 번호"
         VARCHAR(50) name  "사용자명"
-        VARCHAR(50) email  "메일 주소"
+        VARCHAR(100) email  "메일 주소"
         VARCHAR(50) password_hash  "비밀번호"
         VARCHAR(n) created_by "생성자"
         VARCHAR(n) updated_by "수정자"
@@ -66,6 +66,8 @@ erDiagram
         VARCHAR(n) status  "예약 상태 - HELD|CONFIRMED|CANCELED|EXPIRED"
         VARCHAR(n) created_by "생성자"
         VARCHAR(n) updated_by "수정자"
+        BIGINT  total_amount "예약 총액"
+        TIMESTAMPTZ held_expired_at "홀드 만료시간"
         TIMESTAMPTZ created_at "생성 일시"
         TIMESTAMPTZ updated_at "수정 일시"
     }
@@ -139,11 +141,23 @@ erDiagram
         VARCHAR(n) created_by "생성자"
         UUID idempotency_key
     }
+    
+    queue_ticket{
+        UUID id PK "대기열 고유 번호"
+        UUID user_id "사용자 고유 번호"
+        UUID shcedule_id "스케줄 고유 번호"
+        UUID token "대기열 토큰 번호"
+        enum status "WAITING|ACTIVE|EXPIRED|CANCELED"
+        BIGINT position_at_activation "대기열 순번"
+        TIMESTAMPTZ created_at "토큰 발행일자"
+        TIMESTAMPTZ activated_at "토큰 활성 일시"
+        TIMESTAMPTZ expired_at "토큰 만료 일시"
+    }
 
-    user ||--o{ reservation : "makes"
-    user ||--o{ payment : "makes"
-    user ||--|| user_point : "has"
-    user ||--|{ point_history : "has"
+    users ||--o{ reservation : "makes"
+    users ||--o{ payment : "makes"
+    users ||--|| user_point : "has"
+    users ||--|{ point_history : "has"
 
     payment ||--|{ payment_history : "has"
 
@@ -155,4 +169,7 @@ erDiagram
     reservation ||--|{ reservation_seat : "includes"
     user_point ||--|{ point_history : "logs"
     seat ||--o{ reservation_seat : "reserved_by"
+    
+    users ||--o{ queue_ticket : enters 
+    schedule ||--o{ queue_ticket :has 
 ```
