@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.4.1"
 	id("io.spring.dependency-management") version "1.1.7"
+	jacoco
 }
 
 fun getGitHash(): String {
@@ -47,6 +48,37 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
+
+tasks.test {
+	useJUnitPlatform()
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+
+	reports{
+		html.required.set(true)
+		xml.required.set(true)
+		csv.required.set(false)
+
+	}
+}
+
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule{
+			limit {
+				minimum = 0.70.toBigDecimal()
+			}
+		}
+	}
+}
+
+tasks.check {
+	dependsOn(tasks.jacocoTestCoverageVerification)
+}
+
 
 tasks.withType<Test> {
 	useJUnitPlatform()
