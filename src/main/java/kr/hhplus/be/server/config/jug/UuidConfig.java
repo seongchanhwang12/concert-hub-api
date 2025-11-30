@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.config.jug;
 
-import kr.hhplus.be.server.concert.domain.IdGenerator;
-import kr.hhplus.be.server.concert.infra.UuidV7Generator;
+import kr.hhplus.be.server.common.UUIDGenerator;
+import kr.hhplus.be.server.concert.infra.jug.UuidV7Generator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class UuidConfig {
 
     @Bean
-    public IdGenerator idGenerator(){
+    public UUIDGenerator idGenerator(){
         return new UuidV7Generator();
     }
 }

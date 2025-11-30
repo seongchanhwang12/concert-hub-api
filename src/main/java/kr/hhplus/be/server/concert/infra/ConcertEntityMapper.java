@@ -21,17 +21,19 @@ public interface ConcertEntityMapper {
      * @param concertId
      * @return
      */
-    default ConcertId toConcertId(UUID concertId) {
-        return new ConcertId(concertId);
+    default ConcertId toConcertId(Long concertId) {
+        return ConcertId.of(concertId);
     }
 
     /**
+     * Concert 객체를 JpaConcert 매핑할 때 ConcertId 를 Long 으로 변환
+     * Concert 신규 생성시 GeneratedValue 전략으로 ID 가 생성되므로 ConcertId 가 null 일 수 있음
      *
      * @param concertId
      * @return
      */
-    default UUID toUuid(ConcertId concertId) {
-        return concertId.value();
+    default Long toEntityId (ConcertId concertId) {
+        return concertId == null ? null : concertId.value();
     }
 
 

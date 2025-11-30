@@ -1,20 +1,18 @@
 package kr.hhplus.be.server.concert.domain;
 
-import java.util.UUID;
+public record ConcertId(long value) {
 
-public record ConcertId(UUID value) {
-
-    public ConcertId(UUID value) {
+    public ConcertId(long value) {
         this.value = value;
     }
 
-    public static ConcertId of(UUID concertId) {
-        return new ConcertId(concertId);
+    public static ConcertId of(long id) {
+        return new ConcertId(id);
     }
 
     @Override
     public String toString(){
-        return value.toString();
+        return String.valueOf(value);
     }
 
 

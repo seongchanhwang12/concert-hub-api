@@ -2,15 +2,24 @@ package kr.hhplus.be.server.concert.api;
 
 import kr.hhplus.be.server.concert.domain.Concert;
 
-public record GetConcertResponse(String concertId, String title, String startAt, String endAt, String description) {
+import java.time.LocalDate;
+import java.util.List;
 
+public record GetConcertResponse(long concertId,
+                                 String title,
+                                 LocalDate startAt,
+                                 LocalDate endAt,
+                                 String description,
+                                 List<ScheduleSummary> scheduleSummaries) {
 
-    public static GetConcertResponse from(Concert concertDetail) {
+    public static GetConcertResponse from(Concert concert, List<ScheduleSummary> schedules) {
         return new GetConcertResponse(
-                concertDetail.getId().toString(),
-                concertDetail.getTitle(),
-                concertDetail.getStartAt().toString(),
-                concertDetail.getEndAt().toString(),
-                concertDetail.getDescription());
+                concert.getId().value(),
+                concert.getTitle(),
+                concert.getStartAt(),
+                concert.getEndAt(),
+                concert.getDescription(),
+                schedules
+                );
     }
 }

@@ -1,12 +1,13 @@
 package kr.hhplus.be.server.concert.integration;
 
 import kr.hhplus.be.server.PostgresTestcontainersConfig;
+import kr.hhplus.be.server.concert.ConcertFixture;
 import kr.hhplus.be.server.concert.app.GetConcertUseCase;
 import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
-import kr.hhplus.be.server.concert.domain.Concert;
-import kr.hhplus.be.server.concert.domain.ConcertId;
-import kr.hhplus.be.server.concert.domain.ConcertWriter;
-import kr.hhplus.be.server.concert.domain.IdGenerator;
+import kr.hhplus.be.server.concert.domain.*;
+import kr.hhplus.be.server.schedule.domain.ScheduleId;
+import kr.hhplus.be.server.schedule.domain.ScheduleRepository;
+import kr.hhplus.be.server.schedule.fixture.ScheduleFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,33 +24,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({PostgresTestcontainersConfig.class})
 class GetConcertUseCaseIT {
 
-    IdGenerator idGenerator = new FakeIdGenerator();
-
     @Autowired
     GetConcertUseCase getConcertUseCase;
 
     @Autowired
-    ConcertWriter writer;
+    ConcertRepository concertRepository;
+
+    @Autowired
+    ScheduleRepository scheduleRepository;
 
     @DisplayName("유효한 ID로 조회하면, 콘서트를 반환한다.")
     @Test
     void use_case_is_not_null() {
         //given
-        ConcertId concertId = ConcertId.of(idGenerator.nextId());
-        String title = "concert title";
-        String description = "concert description";
-        LocalDate startAt = LocalDate.now();
-        String endAt = LocalDate.now().plusDays(1).toString();
+        Concert concert = ConcertFixture.createConcert();
 
-        Concert concert = Concert.of(concertId, title, startAt, LocalDate.parse(endAt), description);
-        Concert savedConcert = writer.save(concert);
+        // 콘서트 저장
+        Concert savedConcert = concertRepository.save(concert);
+
+        // 스케줄 저장
+        scheduleRepository.saveAll(
+                ScheduleFixture.createListSchedule(savedConcert.getId())
+        );
 
         //when
-        Concert actual = getConcertUseCase.getConcertDetail(concertId);
+        ConcertDetail actual = getConcertUseCase.getConcertDetail(savedConcert.getId());
 
         //then
-        assertThat(actual.getId()).isEqualTo(savedConcert.getId());
-
+        assertThat(actual.concert()).isEqualTo(savedConcert);
+        assertThat(actual.schedules().size()).isNotZero();
 
     }
 }

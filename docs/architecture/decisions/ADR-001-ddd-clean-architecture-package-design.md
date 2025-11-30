@@ -16,6 +16,8 @@ ADR-010: 클린 아키텍처 기반 계층 구조 및 의존성 규칙 채택
 ## 2. Decision
 - 이에 따라 Clean Architecture 스타일을 채택하고
    Domain → Application → web → Infra 계층 구조를 따르기로 한다.
+- UseCase 는 반드시 필요한 경우(명확한 Port 역할) 을 가진 경우에 한하여 interface로 승격해서 불필요한 interface 남발을 줄인다.
+   그 외의 단순한 Application 서비스는 class로 정의한다.(YAGNI 원칙 준수!)
 
 ## 3. Rationale
 - 핵심 비즈니스 규칙을 외부 변화로부터 보호

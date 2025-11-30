@@ -19,7 +19,7 @@ public class Concert {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static Concert of(ConcertId concertId, String title, LocalDate startAt, LocalDate endAt, String description){
-        return new Concert(concertId,title,startAt,endAt,description,LocalDateTime.now(),LocalDateTime.now());
+    public static Concert of(String title, LocalDate startAt, LocalDate endAt, String description){
+        return new Concert(null, title,startAt,endAt,description,LocalDateTime.now(),LocalDateTime.now());
     }
 }

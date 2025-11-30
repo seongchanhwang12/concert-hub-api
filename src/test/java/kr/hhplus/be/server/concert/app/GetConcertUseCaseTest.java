@@ -1,11 +1,13 @@
 package kr.hhplus.be.server.concert.app;
 
 import kr.hhplus.be.server.common.NotFoundException;
-import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
 import kr.hhplus.be.server.concert.domain.Concert;
+import kr.hhplus.be.server.concert.domain.ConcertDetail;
 import kr.hhplus.be.server.concert.domain.ConcertId;
-import kr.hhplus.be.server.concert.domain.ConcertReader;
-import kr.hhplus.be.server.concert.domain.IdGenerator;
+import kr.hhplus.be.server.concert.domain.ConcertRepository;
+import kr.hhplus.be.server.schedule.domain.Schedule;
+import kr.hhplus.be.server.schedule.domain.ScheduleId;
+import kr.hhplus.be.server.schedule.domain.ScheduleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,11 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import static kr.hhplus.be.server.concert.ConcertFixture.createConcert;
+import static kr.hhplus.be.server.schedule.fixture.ScheduleFixture.createSchedulesWithId;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -29,9 +31,10 @@ class GetConcertUseCaseTest {
     GetConcertUseCase getConcertUseCase;
 
     @Mock
-    ConcertReader concertRepository;
+    ConcertRepository concertRepository;
 
-    IdGenerator idGenerator = new FakeIdGenerator();
+    @Mock
+    ScheduleRepository scheduleRepository;
 
     /**
      * 검증 :
@@ -42,24 +45,31 @@ class GetConcertUseCaseTest {
     @Test
     void getConcert_success() {
         //given
-        UUID uuid = idGenerator.nextId();
-        ConcertId concertId = ConcertId.of(uuid);
-        String title = "concert title";
-        String description = "concert description";
-        LocalDate startAt = LocalDate.now();
-        String endAt = LocalDate.now().plusDays(1).toString();
-        Concert concert = Concert.of(concertId, title, startAt, LocalDate.parse(endAt), description);
+        // Concert 데이터 준비
+        long concertIdValue = 1L;
+        ConcertId concertId = new ConcertId(concertIdValue);
+        Concert concert = createConcert(concertId);
 
-        given(concertRepository.findById(concertId))
+        // Schedule 데이터 준비
+        long scheduleIdValue = 1L;
+        ScheduleId scheduleId = ScheduleId.of(scheduleIdValue);
+        List<Schedule> schedules = createSchedulesWithId(concertId, scheduleId);
+
+        // 콘서트 조회
+        given(concertRepository.findConcertByConcertId(concertId))
                 .willReturn(Optional.of(concert));
 
+        // 스케줄 조회
+        given(scheduleRepository.findSchedulesByConcertId(concertId))
+                .willReturn(schedules);
+
         //when
-        Concert actual = getConcertUseCase.getConcertDetail(concertId);
+        ConcertDetail actual = getConcertUseCase.getConcertDetail(concertId);
 
         //then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(concertId);
-
+        assertThat(actual.concert()).isEqualTo(concert);
+        assertThat(actual.schedules()).isEqualTo(schedules);
     }
 
     /**
@@ -70,16 +80,14 @@ class GetConcertUseCaseTest {
     @Test
     void should_throw_exception_when_invalid_concert_id() {
         //given
-        UUID uuid = idGenerator.nextId();
-        ConcertId concertId = ConcertId.of(uuid);
+        long id = 1L;
+        ConcertId concertId = ConcertId.of(id);
 
         //when & then
         assertThatThrownBy(() -> getConcertUseCase.getConcertDetail(concertId))
                 .isInstanceOf(NotFoundException.class);
 
     }
-
-
 
 
 

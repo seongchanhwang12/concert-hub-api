@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface JpaConcertRepository extends JpaRepository<JpaConcert, UUID> {
+public interface JpaConcertRepository extends JpaRepository<JpaConcert, Long> {
 }

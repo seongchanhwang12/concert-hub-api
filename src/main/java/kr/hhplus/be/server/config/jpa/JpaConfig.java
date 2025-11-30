@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(
-        basePackages = {"kr.hhplus.be.server.concert.infra.jpa" }
+        basePackages = "kr.hhplus.be.server"
 )
 public class JpaConfig {
 
