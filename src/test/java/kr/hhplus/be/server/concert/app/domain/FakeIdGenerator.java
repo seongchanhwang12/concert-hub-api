@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.app.domain;
 
-import kr.hhplus.be.server.common.UUIDGenerator;
+import kr.hhplus.be.server.common.domain.UUIDGenerator;
 
 import java.util.UUID;
 

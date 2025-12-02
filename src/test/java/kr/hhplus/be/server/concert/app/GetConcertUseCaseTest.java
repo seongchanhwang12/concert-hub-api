@@ -1,13 +1,14 @@
 package kr.hhplus.be.server.concert.app;
 
-import kr.hhplus.be.server.common.NotFoundException;
-import kr.hhplus.be.server.concert.domain.Concert;
-import kr.hhplus.be.server.concert.domain.ConcertDetail;
-import kr.hhplus.be.server.concert.domain.ConcertId;
-import kr.hhplus.be.server.concert.domain.ConcertRepository;
-import kr.hhplus.be.server.schedule.domain.Schedule;
-import kr.hhplus.be.server.schedule.domain.ScheduleId;
-import kr.hhplus.be.server.schedule.domain.ScheduleRepository;
+import kr.hhplus.be.server.common.app.NotFoundException;
+import kr.hhplus.be.server.concert.app.concert.exception.GetConcertUseCase;
+import kr.hhplus.be.server.concert.domain.concert.Concert;
+import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;
+import kr.hhplus.be.server.concert.domain.concert.ConcertId;
+import kr.hhplus.be.server.concert.domain.concert.ConcertRepository;
+import kr.hhplus.be.server.concert.domain.schedule.Schedule;
+import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
+import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

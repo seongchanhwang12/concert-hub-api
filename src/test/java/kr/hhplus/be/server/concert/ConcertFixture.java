@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.concert;
 
-import kr.hhplus.be.server.concert.domain.Concert;
-import kr.hhplus.be.server.concert.domain.ConcertId;
+import kr.hhplus.be.server.concert.domain.concert.Concert;
+import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 
 import java.time.LocalDate;
 

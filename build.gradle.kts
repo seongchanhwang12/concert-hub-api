@@ -35,8 +35,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 	implementation("com.fasterxml.uuid:java-uuid-generator:4.3.0")
+
+	// QueryDLS
+	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok")
@@ -64,6 +70,22 @@ dependencies {
 
 }
 
+/** QueryDSL Q파일 경로 설정*/
+val generated = "src/main/generated"
+
+sourceSets {
+	main {
+		java {
+			srcDir(generated)
+		}
+	}
+}
+
+tasks.withType<JavaCompile>{
+	options.generatedSourceOutputDirectory.set(file(generated));
+}
+
+/** Jacoco 테스트 리포트*/
 tasks.test {
 	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport)

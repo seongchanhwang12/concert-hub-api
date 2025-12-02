@@ -2,11 +2,11 @@ package kr.hhplus.be.server.concert.integration;
 
 import kr.hhplus.be.server.PostgresTestcontainersConfig;
 import kr.hhplus.be.server.concert.ConcertFixture;
-import kr.hhplus.be.server.concert.app.GetConcertUseCase;
-import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
-import kr.hhplus.be.server.concert.domain.*;
-import kr.hhplus.be.server.schedule.domain.ScheduleId;
-import kr.hhplus.be.server.schedule.domain.ScheduleRepository;
+import kr.hhplus.be.server.concert.app.concert.exception.GetConcertUseCase;
+import kr.hhplus.be.server.concert.domain.concert.Concert;
+import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;
+import kr.hhplus.be.server.concert.domain.concert.ConcertRepository;
+import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import kr.hhplus.be.server.schedule.fixture.ScheduleFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
