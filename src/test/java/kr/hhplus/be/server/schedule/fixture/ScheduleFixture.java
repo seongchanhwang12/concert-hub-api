@@ -3,6 +3,7 @@ package kr.hhplus.be.server.schedule.fixture;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
+import kr.hhplus.be.server.concert.domain.schedule.Schedules;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ScheduleFixture {
         return List.of(createSchedule(concertId)) ;
     }
 
-    public static  List<Schedule> createSchedulesWithId(ConcertId concertId, ScheduleId scheduleId){
-        return List.of(createScheduleWithId(concertId,scheduleId)) ;
+    public static Schedules createSchedulesWithId(ConcertId concertId, ScheduleId scheduleId){
+        return Schedules.from(createScheduleWithId(concertId,scheduleId)) ;
     }
 }

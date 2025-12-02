@@ -7,6 +7,7 @@ import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.concert.ConcertRepository;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
+import kr.hhplus.be.server.concert.domain.schedule.Schedules;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class GetConcertUseCase {
         Concert concert = concertRepository.findConcertByConcertId(concertId)
                 .orElseThrow(() -> new NotFoundException(ConcertErrorCode.NOT_FOUND, concertId.toString()));
 
-        List<Schedule> schedules = scheduleRepository.findSchedulesByConcertId(concertId);
+        Schedules schedules = scheduleRepository.findSchedulesByConcertId(concertId);
 
         return ConcertDetail.from(concert, schedules);
     }

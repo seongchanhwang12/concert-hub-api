@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.concert.app;
+package kr.hhplus.be.server.concert.app.concert;
 
 import kr.hhplus.be.server.common.app.NotFoundException;
 import kr.hhplus.be.server.concert.app.concert.exception.GetConcertUseCase;
@@ -6,9 +6,9 @@ import kr.hhplus.be.server.concert.domain.concert.Concert;
 import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.concert.ConcertRepository;
-import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
+import kr.hhplus.be.server.concert.domain.schedule.Schedules;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static kr.hhplus.be.server.concert.ConcertFixture.createConcert;
@@ -54,7 +53,7 @@ class GetConcertUseCaseTest {
         // Schedule 데이터 준비
         long scheduleIdValue = 1L;
         ScheduleId scheduleId = ScheduleId.of(scheduleIdValue);
-        List<Schedule> schedules = createSchedulesWithId(concertId, scheduleId);
+        Schedules schedules = createSchedulesWithId(concertId, scheduleId);
 
         // 콘서트 조회
         given(concertRepository.findConcertByConcertId(concertId))

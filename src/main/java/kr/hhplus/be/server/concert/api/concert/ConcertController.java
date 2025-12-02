@@ -18,7 +18,6 @@ import java.util.List;
 public class ConcertController {
 
     private final GetConcertUseCase getConcertUseCase;
-    private final ListSeatsUseCase listSeatsUseCase;
 
     /**
      * Concert 상세 정보 조회
@@ -30,7 +29,8 @@ public class ConcertController {
     public ResponseEntity<GetConcertResponse> getConcert(@PathVariable Long concertId) {
         ConcertDetail concertDetail = getConcertUseCase.getConcertDetail(ConcertId.of(concertId));
 
-        List<ScheduleResponse> summaries = concertDetail.schedules().stream()
+        List<ScheduleResponse> summaries = concertDetail.schedules()
+                .stream()
                 .map(ScheduleResponse::from)
                 .toList();
 
