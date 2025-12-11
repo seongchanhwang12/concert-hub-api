@@ -36,7 +36,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-	implementation("com.fasterxml.uuid:java-uuid-generator:4.3.0")
+	// implementation("com.fasterxml.uuid:java-uuid-generator:4.3.0")
+	implementation("com.github.f4b6a3:uuid-creator:5.3.2")
 
 	// QueryDLS
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")

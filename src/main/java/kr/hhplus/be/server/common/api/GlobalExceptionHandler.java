@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.api;
 
 import kr.hhplus.be.server.common.app.ApiErrorCode;
-import kr.hhplus.be.server.common.app.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

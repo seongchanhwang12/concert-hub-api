@@ -12,4 +12,6 @@ public interface ScheduleRepository {
     void saveAll(List<Schedule> listSchedule);
 
     Optional<Schedule> findById(ScheduleId scheduleId);
+
+    Schedule save(Schedule schedule);
 }

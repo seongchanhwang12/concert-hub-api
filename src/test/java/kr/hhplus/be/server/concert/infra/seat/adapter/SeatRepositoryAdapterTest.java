@@ -57,7 +57,7 @@ class SeatRepositoryAdapterTest {
         em.persist(jpaSchedule);
 
         JpaSeat available = JpaSeatFixture.create(jpaSchedule.getId(), SeatStatus.AVAILABLE);
-        JpaSeat held = JpaSeatFixture.create(jpaSchedule.getId(), SeatStatus.HELD);
+        JpaSeat held = JpaSeatFixture.create(jpaSchedule.getId(), SeatStatus.HOLD);
 
         em.persist(available);
         em.persist(held);

@@ -1,18 +1,15 @@
 package kr.hhplus.be.server.concert.app.concert.exception;
 
-import kr.hhplus.be.server.common.app.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.NotFoundException;
 import kr.hhplus.be.server.concert.domain.concert.Concert;
 import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.concert.ConcertRepository;
-import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import kr.hhplus.be.server.concert.domain.schedule.Schedules;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

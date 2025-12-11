@@ -17,8 +17,12 @@ public interface ScheduleEntityMapper {
 
     JpaSchedule toEntity(Schedule schedule);
 
-    default Long toScheduleIdValue(ScheduleId scheduleId){
+    default Long fromScheduleId(ScheduleId scheduleId){
         return scheduleId == null ? null : scheduleId.value();
+    }
+
+    default ScheduleId toScheduleId(long scheduleId){
+        return ScheduleId.of(scheduleId);
     }
 
     default Long toConcertIdValue(ConcertId concertId){

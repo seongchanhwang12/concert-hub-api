@@ -33,7 +33,7 @@ class ListSeatsUseCaseTest {
     void given_show_date_when_query_available_seats_then_return_seat_list() {
         //given
         long scheduleId = 1L;
-        Seats seats = SeatFixture.createSeats();
+        Seats seats = SeatFixture.createSeats(SeatStatus.AVAILABLE);
 
         given(seatRepository.findAvailableSeats(any(ScheduleId.class)))
                 .willReturn(seats);

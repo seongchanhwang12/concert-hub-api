@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.app.concert;
 
-import kr.hhplus.be.server.common.app.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.NotFoundException;
 import kr.hhplus.be.server.concert.app.concert.exception.GetConcertUseCase;
 import kr.hhplus.be.server.concert.domain.concert.Concert;
 import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;

@@ -19,6 +19,7 @@ import java.util.Optional;
 public class ScheduleRepositoryAdapter implements ScheduleRepository {
     private final JpaScheduleRepository scheduleRepository;
     private final ScheduleEntityMapper scheduleEntityMapper;
+    private final JpaScheduleRepository jpaScheduleRepository;
 
     @Override
     public Schedules findSchedulesByConcertId(ConcertId concertId) {
@@ -38,5 +39,11 @@ public class ScheduleRepositoryAdapter implements ScheduleRepository {
         return scheduleRepository.findById(scheduleId.value()).stream()
                 .map(scheduleEntityMapper::toDomain)
                 .findAny();
+    }
+
+    @Override
+    public Schedule save(Schedule schedule) {
+        JpaSchedule savedSchedule = jpaScheduleRepository.save(scheduleEntityMapper.toEntity(schedule));
+        return scheduleEntityMapper.toDomain(savedSchedule);
     }
 }

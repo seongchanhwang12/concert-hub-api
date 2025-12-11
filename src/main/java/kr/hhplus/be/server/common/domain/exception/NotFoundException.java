@@ -1,5 +1,6 @@
-package kr.hhplus.be.server.common.app;
+package kr.hhplus.be.server.common.domain.exception;
 
+import kr.hhplus.be.server.common.app.ApiErrorCode;
 import lombok.Getter;
 
 @Getter

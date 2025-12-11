@@ -1,12 +1,11 @@
 package kr.hhplus.be.server.concert.app.schedule;
 
-import kr.hhplus.be.server.common.app.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.NotFoundException;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import kr.hhplus.be.server.schedule.fixture.ScheduleFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
