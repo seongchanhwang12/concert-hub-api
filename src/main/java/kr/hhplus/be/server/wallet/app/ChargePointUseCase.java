@@ -25,7 +25,7 @@ public class ChargePointUseCase {
     @Transactional
     public ChargePointResult chargePoint(ChargePointCommand cmd) {
         final Money amount = Money.wons(cmd.amount());
-        final UserId userId = UserId.of(cmd.userId());
+        final UserId userId = cmd.userId();
         final UUID idempotencyKey = cmd.IdempotencyKey();
 
         Wallet wallet = walletRepository.findByOwnerId(userId)

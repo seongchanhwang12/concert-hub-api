@@ -8,7 +8,7 @@ import java.util.UUID;
 public class ChargePointCommandFixture {
 
     public static ChargePointCommand createWith(UUID idempotencyKey, UserId userId, Point chargeAmount) {
-        return new ChargePointCommand(idempotencyKey,userId.value(), chargeAmount.balance());
+        return new ChargePointCommand(idempotencyKey,userId, chargeAmount.balance());
 
     }
 

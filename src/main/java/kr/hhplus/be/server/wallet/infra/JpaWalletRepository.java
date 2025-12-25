@@ -22,4 +22,12 @@ public interface JpaWalletRepository extends JpaRepository<JpaWallet, UUID> {
         """, nativeQuery = true)
     void upsertAndReturn(@Param("id") UUID id,
                          @Param("ownerId") UUID ownerId);
+
+
+    @Query(value = """
+        SELECT w.point
+        FROM JpaWallet w
+        WHERE w.ownerId = :userId
+    """)
+    Optional<Long> findPointBalanceByUserId(@Param("userId") UUID userId);
 }
