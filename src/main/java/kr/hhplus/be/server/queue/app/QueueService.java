@@ -19,11 +19,12 @@ public class QueueService {
 
     private final QueueTokenRepository queueTokenRepository;
     private final Clock clock;
+    private final static int MAX_ACTIVE_TOKEN_COUNT = 50;
 
     /**
      * 대기열 토큰 발급
-     * - 토큰 현재 순서 저장
-     * -
+     * - 대기 순번이 있는 경우 WAITING 발급
+     * - 대기 순번 없는 경우 ACTIVE 발급
      */
     public IssueQueueTokenResult issueQueueToken(IssueQueueTokenCommand cmd) {
         final ScheduleId scheduleId = ScheduleId.of(cmd.scheduleId());
@@ -34,34 +35,49 @@ public class QueueService {
         Optional<QueueToken> token = queueTokenRepository.findByUserIdAndScheduleId(userId, scheduleId);
         if(token.isPresent()) {
             QueueToken found = token.get();
-            QueueToken queueToken = ensureActive(found,LocalDateTime.now(clock));
-            return IssueQueueTokenResult.from(queueToken);
+
+            // 만료된 토큰이면 재발행
+            if(found.isExpired()){
+                QueueToken queueToken = reissueToken(found,LocalDateTime.now(clock));
+                return IssueQueueTokenResult.from(queueToken);
+            }
+
+            // 그 외 (활성, 대기 상태 반환)
+            return IssueQueueTokenResult.from(found);
+
         }
 
-        // 최초 발급시 동시성 발급 처리
+        // 최초 발급시 동시성 발급 처리 (scheduleId + userId 유니크 위반시 DuplicateQueueTokenException)
         try{
-            QueueToken saved = queueTokenRepository.saveAndFlush(
-                    QueueToken.createActive(userId,scheduleId,now));
+            long currentActiveTokenCount = queueTokenRepository.countActiveTokens(scheduleId);
+            QueueToken created = currentActiveTokenCount < MAX_ACTIVE_TOKEN_COUNT
+                    ? QueueToken.createActive(userId, scheduleId, now)
+                    : QueueToken.createWaiting(userId, scheduleId, now);
+
+            QueueToken saved = queueTokenRepository.saveAndFlush(created);
             return IssueQueueTokenResult.from(saved);
+
+
         } catch (DuplicateQueueTokenException e) {
             // 동시성 예외시 저장된 토큰 Unique 예외처리
             log.warn("Duplicate Queue token. scheduleId={}, userId={}",scheduleId, userId);
             QueueToken found = queueTokenRepository.findByUserIdAndScheduleId(userId, scheduleId)
                     .orElseThrow(()-> new IllegalStateException("occurred duplicate token exception. but No active token found"));
 
-            QueueToken queueToken = ensureActive(found, LocalDateTime.now(clock));
-            return IssueQueueTokenResult.from(queueToken);
+            if(found.isExpired()){
+                QueueToken queueToken = reissueToken(found,LocalDateTime.now(clock));
+                return IssueQueueTokenResult.from(queueToken);
+            }
+
+            return IssueQueueTokenResult.from(found);
         }
 
     }
 
-    private QueueToken ensureActive(QueueToken queueToken, LocalDateTime now) {
-        if(queueToken.isActive()){
-            return queueToken;
-        }
-
+    private QueueToken reissueToken(QueueToken queueToken, LocalDateTime now) {
         queueToken.reissue(now);
         return queueTokenRepository.save(queueToken);
 
     }
+
 }

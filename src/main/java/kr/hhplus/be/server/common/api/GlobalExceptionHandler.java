@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.api;
 
 import kr.hhplus.be.server.common.app.ApiErrorCode;
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(ApplicationException e) {
         log.error(e.getMessage(), e);
         ApiErrorCode errorCode = e.getErrorCode();
 

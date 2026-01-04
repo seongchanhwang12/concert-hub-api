@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.app.concert.exception;
 
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.domain.concert.Concert;
 import kr.hhplus.be.server.concert.domain.concert.ConcertDetail;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
@@ -28,7 +28,7 @@ public class GetConcertUseCase {
     @Transactional(readOnly = true)
     public ConcertDetail getConcertDetail(ConcertId concertId) {
         Concert concert = concertRepository.findConcertByConcertId(concertId)
-                .orElseThrow(() -> new NotFoundException(ConcertErrorCode.NOT_FOUND, concertId.toString()));
+                .orElseThrow(() -> new ApplicationException(ConcertErrorCode.NOT_FOUND, concertId.toString()));
 
         Schedules schedules = scheduleRepository.findSchedulesByConcertId(concertId);
 

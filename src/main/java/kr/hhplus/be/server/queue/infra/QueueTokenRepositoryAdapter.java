@@ -44,6 +44,12 @@ public class QueueTokenRepositoryAdapter implements QueueTokenRepository {
     }
 
     @Override
+    public long countActiveTokens(ScheduleId scheduleId) {
+        return queueTokenJpaRepository.countActiveTokens(scheduleId.value());
+
+    }
+
+    @Override
     public QueueToken saveAndFlush(QueueToken queueToken) {
         try {
             QueueToken saved = queueTokenJpaRepository.save(QueueTokenEntity.from(queueToken))

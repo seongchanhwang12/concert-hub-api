@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.reservation.app;
 
 import kr.hhplus.be.server.common.domain.UserId;
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.app.schedule.ScheduleQueryService;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.seat.Seat;
@@ -44,7 +44,7 @@ public class ReserveSeatUseCase {
         final UserId userId = reserveSeatCommand.userId();
 
         final Seat seat = seatRepository.find(seatId)
-                .orElseThrow(() -> new NotFoundException(SeatErrorCode.NOT_FOUND, "seat not found. seatId = " + seatId.value()));
+                .orElseThrow(() -> new ApplicationException(SeatErrorCode.NOT_FOUND, "seat not found. seatId = " + seatId.value()));
 
         // Seat 상태가 AVAILABLE 이 아닌 경우 예외
         if(!seat.isReservable())

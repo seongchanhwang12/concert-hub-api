@@ -37,4 +37,12 @@ public interface QueueTokenJpaRepository extends JpaRepository<QueueTokenEntity,
             @Param("scheduleId") long scheduleId,
             @Param("status") QueueTokenStatus status,
             @Param("myIssuedAt") LocalDateTime issuedAt);
+
+    @Query("""
+        SELECT count(q)
+        FROM QueueTokenEntity q
+        WHERE q.scheduleId = :scheduleId
+        AND q.status = 'ACTIVE'
+    """)
+    long countActiveTokens(long scheduleId);
 }

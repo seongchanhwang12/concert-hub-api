@@ -35,12 +35,14 @@ public class QueueToken {
                 .build();
     }
 
-    /**
-     * 토큰이 활성 상태인지 검증
-     * @return
-     */
-    public boolean isActive() {
-        return status == QueueTokenStatus.ACTIVE;
+    public static QueueToken createWaiting(UserId userId, ScheduleId scheduleId, LocalDateTime issuedAt) {
+        return QueueToken.builder()
+                .userId(userId)
+                .scheduleId(scheduleId)
+                .tokenValue(UUID.randomUUID())
+                .status(QueueTokenStatus.WAITING)
+                .issuedAt(issuedAt)
+                .build();
     }
 
     /**
@@ -49,7 +51,6 @@ public class QueueToken {
     public void expire() {
         status = QueueTokenStatus.EXPIRED;
     }
-
 
     /**
      * 토큰 재발행
@@ -60,4 +61,27 @@ public class QueueToken {
         this.tokenValue = UUID.randomUUID();
     }
 
+    /**
+     * 토큰이 활성 여부 확인
+     * @return boolean
+     */
+    public boolean isActive() {
+        return status == QueueTokenStatus.ACTIVE;
+    }
+
+    /**
+     * 토큰 만료 여부 확인
+     * @return boolean
+     */
+    public boolean isExpired() {
+        return status == QueueTokenStatus.EXPIRED;
+    }
+
+    /**
+     * 토큰 대기상태 확인
+     * @return boolean
+     */
+    public boolean isWaiting() {
+        return status == QueueTokenStatus.WAITING;
+    }
 }

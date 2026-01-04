@@ -246,6 +246,50 @@ class QueueServiceTest {
         assertThat(queueTokenCaptorValue).isNotNull();
     }
 
+    /**
+     * 대기 상태 토큰 발행 테스트
+     * - userId 와 scheduleId 로 발행된 토큰이 있는지 조회해야 한다.
+     * - 발행된 토큰이 없읅
+     * - 저장된 토큰의 데이터를 발행 결과로 반환한다.
+     * - 최초 발행시 saveAndFlush 를 통해 자장후 즉시 플러시 되어야한다. (멱등성 대응)
+     */
+    @Test
+    @DisplayName("특정 사용자에게 발행된 토큰이 없고, 최대 활성 수량을 넘은 경우 대기 상태의 토큰을 저장하고, 결과를 반환한다")
+    void given_scheduleId_When_not_exists_issueQueueToken_Then_save_And_return_waiting_token() {
+        //given
+        long scheduleIdValue = 1L;
+        UUID userIdValue = UUID.randomUUID();
+
+        UserId userId = UserId.of(userIdValue);
+        ScheduleId scheduleId = ScheduleId.of(scheduleIdValue);
+        IssueQueueTokenCommand cmd = new IssueQueueTokenCommand(scheduleIdValue, userId);
+
+        given(queueTokenRepository.findByUserIdAndScheduleId(userId,scheduleId))
+                .willReturn(Optional.empty());
+
+        given(queueTokenRepository.countActiveTokens(scheduleId)).willReturn(51L);
+
+        given(queueTokenRepository.saveAndFlush(any(QueueToken.class)))
+                .willAnswer(invocation -> invocation.getArgument(0));
+
+        //when
+        queueService.issueQueueToken(cmd);
+
+        //then
+        then(queueTokenRepository).should().findByUserIdAndScheduleId(eq(userId), eq(scheduleId));
+
+        // 토큰 검사
+        then(queueTokenRepository).should().saveAndFlush(queueTokenCaptor.capture());
+        QueueToken queueTokenCaptorValue = queueTokenCaptor.getValue();
+        assertThat(queueTokenCaptorValue).isNotNull();
+        assertThat(queueTokenCaptorValue.getStatus()).isEqualTo(QueueTokenStatus.WAITING);
+
+    }
+
+
+
+
+
 
 
 }

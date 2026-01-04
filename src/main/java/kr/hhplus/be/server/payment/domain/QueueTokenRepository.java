@@ -19,4 +19,7 @@ public interface QueueTokenRepository {
     Optional<QueueToken> findByUserIdAndScheduleId(UserId userId, ScheduleId scheduleId);
 
     QueueToken save(QueueToken found);
+
+    long countActiveTokens(ScheduleId scheduleId);
+
 }

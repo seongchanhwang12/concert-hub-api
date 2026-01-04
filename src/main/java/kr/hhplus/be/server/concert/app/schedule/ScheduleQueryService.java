@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.app.schedule;
 
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.app.schedule.exception.ScheduleErrorCode;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
@@ -18,7 +18,7 @@ public class ScheduleQueryService {
     @Transactional(readOnly = true)
     public Schedule findScheduleById(ScheduleId scheduleId) {
         return scheduleRepository.findById(scheduleId)
-                .orElseThrow(()-> new NotFoundException(
+                .orElseThrow(()-> new ApplicationException(
                         ScheduleErrorCode.NOT_FOUND,
                         "Schedule not found. id = " +  scheduleId.value()) );
     }

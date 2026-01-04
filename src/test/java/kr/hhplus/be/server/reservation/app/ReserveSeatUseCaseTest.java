@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.reservation.app;
 
 import kr.hhplus.be.server.common.domain.UserId;
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
 import kr.hhplus.be.server.concert.app.schedule.ScheduleQueryService;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
@@ -199,7 +199,7 @@ class ReserveSeatUseCaseTest {
             //when & then
             // 1. seatID 로 조회되는 좌석이 없으면, NotFoundException
             assertThatThrownBy(()-> reserveSeatUseCase.reserveSeat(reserveSeatCommand))
-                    .isInstanceOf(NotFoundException.class);
+                    .isInstanceOf(ApplicationException.class);
             // 2. 예약 관련 저장이 없어야 한다.
             then(reservationRepository).shouldHaveNoInteractions();
             then(seatRepository).should(never()).save(any());

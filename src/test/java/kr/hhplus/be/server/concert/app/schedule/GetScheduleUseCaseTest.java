@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concert.app.schedule;
 
-import kr.hhplus.be.server.common.domain.exception.NotFoundException;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
@@ -64,7 +64,7 @@ class GetScheduleUseCaseTest {
 
         //when & then
         assertThatThrownBy(()-> getScheduleUseCase.getScheduleDetail(scheduleId))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(ApplicationException.class);
 
     }
 
