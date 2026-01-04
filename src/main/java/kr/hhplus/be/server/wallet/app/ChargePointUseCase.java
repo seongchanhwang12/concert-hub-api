@@ -24,19 +24,18 @@ public class ChargePointUseCase {
 
     @Transactional
     public ChargePointResult chargePoint(ChargePointCommand cmd) {
-        final Money amount = Money.wons(cmd.amount());
+        final Money chargeAmount = Money.wons(cmd.amount());
         final UserId userId = cmd.userId();
         final UUID idempotencyKey = cmd.IdempotencyKey();
 
         Wallet wallet = walletRepository.findByOwnerId(userId)
                 .orElseGet(()-> walletFactory.empty(userId));
 
-        wallet.charge(Point.of(amount.value()));
-        WalletTransaction chargeTx = walletTransactionFactory.createCharge(wallet, idempotencyKey);
+        wallet.charge(Point.of(chargeAmount.value()));
+        WalletTransaction chargeTx = walletTransactionFactory.createCharge(wallet, Point.of(chargeAmount.value()), idempotencyKey);
 
         // 이미 충전된 내역인 경우 리턴 (성공)
         if(walletTransactionRepository.trySaveIdempotency(chargeTx)){
-            // 최초 진행시 save
             walletRepository.save(wallet);
             return ChargePointResult.from(chargeTx);
         };

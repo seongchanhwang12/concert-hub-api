@@ -41,7 +41,7 @@ class GetPointBalanceUseCaseIT {
 
         // then
         walletReader.findPointBalanceByOwnerId(userId);
-        assertThat(actual).isEqualTo(wallet.getPoint());
+        assertThat(actual).isEqualTo(wallet.getBalance());
 
     }
 }

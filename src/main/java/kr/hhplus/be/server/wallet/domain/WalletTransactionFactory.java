@@ -11,16 +11,25 @@ import java.util.UUID;
 public class WalletTransactionFactory {
     private final IdGenerator idGenerator;
 
-    public WalletTransaction createCharge(Wallet wallet, UUID idempotencyKey) {
+    public WalletTransaction createCharge(Wallet wallet, Point chargeAmount, UUID idempotencyKey) {
         final WalletTransactionId walletTransactionId = WalletTransactionId.of(idGenerator.nextId());
-        final Point balanceAfter = wallet.getPoint();
-
         return WalletTransaction.createCharge(
                 walletTransactionId,
-                wallet.getId(),
-                wallet.getOwnerId(),
-                wallet.getPoint(),
+                wallet,
+                chargeAmount,
+                idempotencyKey);
+
+    }
+
+    public WalletTransaction createUse(Wallet wallet, UUID idempotencyKey, UUID paymentId) {
+        final WalletTransactionId walletTransactionId = WalletTransactionId.of(idGenerator.nextId());
+        final Point balanceAfter = wallet.getBalance();
+        final TransactionReference reference = new TransactionReference(paymentId.toString());
+        return WalletTransaction.createUse(
+                walletTransactionId,
+                wallet,
                 balanceAfter,
+                reference,
                 idempotencyKey);
 
     }

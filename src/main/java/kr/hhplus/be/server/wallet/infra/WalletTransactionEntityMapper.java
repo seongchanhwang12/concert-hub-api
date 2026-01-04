@@ -19,6 +19,7 @@ public class WalletTransactionEntityMapper {
                 entity.getType(),
                 Point.of(entity.getPointAmount()),
                 Point.of(entity.getBalanceAfter()),
+                new TransactionReference(entity.getTransactionReference()),
                 entity.getIdempotencyKey());
     }
 
@@ -29,7 +30,17 @@ public class WalletTransactionEntityMapper {
         UUID userId = fromUserId(walletTransaction.getOwnerId());
         long amount = fromPointAmount(walletTransaction.getPointAmount());
         long balanceAfter = fromBalanceAfter(walletTransaction.getBalanceAfter());
-        return new JpaWalletTransaction(id,walletId,userId,walletTransaction.getType(),amount,balanceAfter,walletTransaction.getIdempotencyKey());
+        String referenceValue = walletTransaction.getReference().value();
+
+        return new JpaWalletTransaction(
+                id,
+                walletId,
+                userId,
+                walletTransaction.getType(),
+                amount,
+                balanceAfter,
+                referenceValue,
+                walletTransaction.getIdempotencyKey());
     }
 
     public UUID fromTransactionId(WalletTransactionId id) {

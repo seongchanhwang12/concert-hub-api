@@ -38,7 +38,7 @@ public class JpaWallet {
     public static JpaWallet from(Wallet wallet) {
         return new JpaWallet(wallet.getId().value(),
                 wallet.getOwnerId().value(),
-                wallet.getPoint().balance());
+                wallet.getBalance().balance());
     }
 
 }

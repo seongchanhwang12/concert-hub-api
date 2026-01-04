@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Builder(access = AccessLevel.PROTECTED)
@@ -35,4 +36,9 @@ public class Reservation {
                     Instant.now());
     }
 
+    public void assertOwnedBy(UserId userId) {
+        if(!Objects.equals(this.userId, userId)) {
+            throw new IllegalStateException("Owner of reservation has not been assigned to user.");
+        }
+    }
 }

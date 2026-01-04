@@ -38,6 +38,9 @@ public class JpaWalletTransaction {
     @Column(name = "balance_after")
     private long balanceAfter;
 
+    @Column(name = "reference")
+    private String transactionReference;
+
     @Column(name = "idempotency_key")
     private UUID idempotencyKey;
 

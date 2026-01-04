@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,7 +27,8 @@ public class JpaSeat {
     private String grade;
     private String status;
     private long price;
-    private Instant expiredAt;
+    private LocalDateTime expiredAt;
+    private LocalDateTime reservedAt;
 
 
 }

@@ -1,25 +1,58 @@
 package kr.hhplus.be.server.wallet.domain;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import kr.hhplus.be.server.common.domain.UserId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
 @Builder(access = AccessLevel.PROTECTED)
 public class WalletTransaction {
-    private WalletTransactionId id;
-    private WalletId walletId;
-    private UserId ownerId;
-    private TransactionType type;
-    private Point pointAmount;
+    private final WalletTransactionId id;
+    private final WalletId walletId;
+    private final UserId ownerId;
     private Point balanceAfter;
+    private Point pointAmount;
+    private TransactionType type;
+    private TransactionReference reference;
     private UUID idempotencyKey;
 
-    public static WalletTransaction createCharge(WalletTransactionId id, WalletId walletId, UserId userId, Point chargeAmount, Point balanceAfter, UUID idempotencyKey) {
-        return new WalletTransaction(id, walletId, userId, TransactionType.CHARGE, chargeAmount, balanceAfter, idempotencyKey);
+    public static WalletTransaction createCharge(
+            WalletTransactionId id,
+            Wallet wallet,
+            Point chargeAmount,
+            UUID idempotencyKey) {
+        return new WalletTransaction(
+                id,
+                wallet.getId(),
+                wallet.getOwnerId(),
+                wallet.getBalance(),
+                chargeAmount,
+                TransactionType.CHARGE,
+                null,
+                idempotencyKey
+                );
+    }
+
+    public static WalletTransaction createUse(
+            WalletTransactionId id,
+            Wallet wallet,
+            Point useAmount,
+            TransactionReference paymentId,
+            UUID idempotencyKey) {
+        return new WalletTransaction(
+                id,
+                wallet.getId(),
+                wallet.getOwnerId(),
+                wallet.getBalance(),
+                useAmount,
+                TransactionType.USE,
+                paymentId,
+                idempotencyKey);
     }
 
     public static WalletTransaction of(
@@ -29,7 +62,16 @@ public class WalletTransaction {
             TransactionType type,
             Point pointAmount,
             Point balanceAfter,
+            TransactionReference reference,
             UUID idempotencyKey) {
-        return new WalletTransaction(id,walletId,userId,type,pointAmount,balanceAfter,idempotencyKey);
+        return new WalletTransaction(
+                id,
+                walletId,
+                userId,
+                pointAmount,
+                balanceAfter,
+                type,
+                reference,
+                idempotencyKey);
     }
 }

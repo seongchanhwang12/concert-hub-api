@@ -7,20 +7,25 @@ import java.util.UUID;
 public class WalletTransactionFixture {
 
     public static WalletTransaction createCharge(
-            UserId userId,
+            Wallet wallet,
             Point chargedAmount,
-            Point balanceAfter,
             UUID idempotencyKey) {
 
         WalletTransactionId id = WalletTransactionId.of(UUID.randomUUID());
-        WalletId walletId = WalletId.of(UUID.randomUUID());
 
         return WalletTransaction.createCharge(id,
-                walletId,
-                userId,
+                wallet,
                 chargedAmount,
-                balanceAfter,
                 idempotencyKey);
     }
 
+    public static WalletTransaction createUse(Wallet wallet, long useAmount, UUID idempotencyKey, String reference) {
+        WalletTransactionId id = WalletTransactionId.of(UUID.randomUUID());
+        Point point = Point.of(useAmount);
+        return WalletTransaction.createUse(id,
+                wallet,
+                point,
+                new TransactionReference(reference),
+                idempotencyKey);
+    }
 }

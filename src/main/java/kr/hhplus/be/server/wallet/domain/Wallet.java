@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.wallet.domain;
 
+import kr.hhplus.be.server.common.domain.Money;
 import kr.hhplus.be.server.common.domain.UserId;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ public class Wallet {
 
     private final WalletId id;
     private final UserId ownerId;
-    private Point point;
+    private Point balance;
 
     public static Wallet create(WalletId id, UserId ownerId, Point point) {
         return new Wallet(id, ownerId, point);
@@ -26,6 +27,15 @@ public class Wallet {
     }
 
     public void charge(Point chargePoint){
-        point = point.plus(chargePoint);
+        balance = balance.plus(chargePoint);
+    }
+
+    /**
+     * 지갑에서 지불한다.
+     * @param paidAmount - 결제 금액
+     */
+    public Point pay(Money paidAmount) {
+        Point paidPoint = Point.of(paidAmount.value());
+        return balance = balance.minus(paidPoint);
     }
 }

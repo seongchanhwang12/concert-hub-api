@@ -4,11 +4,8 @@ import kr.hhplus.be.server.common.domain.UserId;
 import kr.hhplus.be.server.common.domain.exception.NotFoundException;
 import kr.hhplus.be.server.concert.app.schedule.ScheduleQueryService;
 import kr.hhplus.be.server.concert.domain.schedule.Schedule;
-import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
-import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import kr.hhplus.be.server.concert.domain.seat.Seat;
 import kr.hhplus.be.server.concert.domain.seat.SeatId;
-import kr.hhplus.be.server.concert.domain.seat.SeatIds;
 import kr.hhplus.be.server.concert.domain.seat.SeatRepository;
 import kr.hhplus.be.server.concert.domain.seat.exception.SeatErrorCode;
 import kr.hhplus.be.server.concert.domain.seat.exception.SeatException;
@@ -21,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +53,7 @@ public class ReserveSeatUseCase {
         final Schedule schedule = scheduleQueryService.findScheduleById(seat.getScheduleId());
 
         // 시트 상태 변경
-        seat.hold(clock);
+        seat.hold(LocalDateTime.now(clock));
         seatRepository.save(seat);
 
         final Reservation save = reservationRepository.save(Reservation.createConfirmed(ReservationId.of(idGenerator.nextId()), seat, userId));

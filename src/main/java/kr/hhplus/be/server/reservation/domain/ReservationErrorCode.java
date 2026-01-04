@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ApiErrorCode {
-    SEAT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "RSV_400", "error.reservation.limit_exceeded");
+    SEAT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "RSV-400", "error.reservation.limit_exceeded"),
+    NOT_FOUND(HttpStatus.NOT_FOUND,"RSV-404","error.reservation.not_found" );
 
     private final HttpStatus status;
     private final String code;

@@ -5,6 +5,9 @@ import kr.hhplus.be.server.reservation.domain.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Repository
 @RequiredArgsConstructor
 public class ReservationRepositoryAdapter implements ReservationRepository {
@@ -17,5 +20,10 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
     public Reservation save(Reservation reservation) {
         JpaReservation save = reservationRepository.save(reservationEntityMapper.toEntity(reservation));
         return reservationEntityMapper.toDomain(save);
+    }
+
+    @Override
+    public Optional<Reservation> findById(UUID reservationId) {
+        return reservationRepository.findById(reservationId).map(reservationEntityMapper::toDomain);
     }
 }

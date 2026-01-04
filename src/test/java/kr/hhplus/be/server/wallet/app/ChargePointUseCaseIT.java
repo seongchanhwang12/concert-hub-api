@@ -58,7 +58,8 @@ class ChargePointUseCaseIT {
         UserId userId = UserId.of(UUID.randomUUID());
         UUID idempotencyKey = UUID.randomUUID();
 
-        WalletTransaction chargeTx = WalletTransactionFixture.createCharge(userId, chargeAmount, balanceAfter, idempotencyKey);
+        Wallet wallet = WalletFixture.createWith(userId, Point.of(1000L));
+        WalletTransaction chargeTx = WalletTransactionFixture.createCharge(wallet, chargeAmount, idempotencyKey);
         walletTransactionRepository.save(chargeTx);
 
         ChargePointCommand cmd = ChargePointCommandFixture.createWith(idempotencyKey, userId, chargeAmount);
