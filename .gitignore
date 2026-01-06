@@ -37,3 +37,10 @@ out/
 .vscode/
 
 data
+
+# QueryDSL Q-types
+src/main/generated/
+
+# MapStruct Impl
+**/*MapperImpl.java
+**/*Impl.java

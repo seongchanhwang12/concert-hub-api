@@ -5,11 +5,11 @@
 
 ### Prerequisites
 ## 문서
-- [주요 시나리오](./docs/scenario.md)
+- [주요 시나리오](docs/scenario/scenario.md)
 - [API 명세서](./docs/api-spec.yaml)
-- [ERD](docs/erd.md)
+- [ERD](docs/diagram/erd.md)
 - [인프라 구성도](./docs/mvp-infra)
-- [시퀀스 다이어그램](./docs/sequence-diagram.md)
+- [시퀀스 다이어그램](docs/diagram/sequence-diagram.md)
 
 ## 📝  단계별 정보 정리
 | 단계 | 백엔드 입력 | 프론트 출력 | 도메인 규칙 / 제약 |
@@ -114,6 +114,9 @@ stateDiagram-v2
 - 공통 : 클라우드 환경 적용 용이
 - 데이터 정합성, 확실성 PostGreSQL 우수
 ## ADR-003: Redis 도입 여부
+## ADR-004: UUIDv7 ID 생성 전략 선택(JUG vs Hypersistence Utils)
+- Hypersistence Utils
+- JUG(java-uuid-generator)
 ### 시스템 목표 
 - 현재 대량 트래픽 상황을 가정하고, 스케일 아웃을 고려하는 환경을 목표로 구현한다.
 
