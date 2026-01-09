@@ -53,6 +53,13 @@ public class QueueToken {
     }
 
     /**
+     * 토큰 활성화
+     */
+    public void activate(LocalDateTime now) {
+        status = QueueTokenStatus.ACTIVE;
+        //TODO 로그성 컬럼 추가후 now 대입 로직 추가 예정
+    }
+    /**
      * 토큰 재발행
      */
     public void reissue(LocalDateTime now) {
@@ -84,4 +91,5 @@ public class QueueToken {
     public boolean isWaiting() {
         return status == QueueTokenStatus.WAITING;
     }
+
 }

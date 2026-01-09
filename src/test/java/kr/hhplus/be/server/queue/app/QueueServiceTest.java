@@ -285,6 +285,17 @@ class QueueServiceTest {
         assertThat(queueTokenCaptorValue.getStatus()).isEqualTo(QueueTokenStatus.WAITING);
 
     }
+    
+    @Test
+    void given_tokenValue_when_get_token_status_then_return_query_token_status_and_result() {
+        //given
+        
+        //when
+        //queueService.polling()
+        
+        //then
+        
+    }
 
 
 
