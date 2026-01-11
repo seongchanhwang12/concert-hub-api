@@ -82,7 +82,7 @@ public class QueueService {
         return queueTokenRepository.save(queueToken);
     }
 
-    public QueueToken polling(UUID tokenValue){
+    public QueueToken enterQueue(UUID tokenValue){
         LocalDateTime now = LocalDateTime.now(clock);
         if(tokenValue == null) throw new ApplicationException(CommonErrorCode.NOT_FOUND,"queue token id is null");
         QueueToken queueToken = queueTokenRepository.findByTokenValue(tokenValue)
