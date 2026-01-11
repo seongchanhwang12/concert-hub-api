@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -303,11 +302,11 @@ class QueueServiceTest {
         given(queueTokenRepository.findByTokenValue(tokenValue)).willReturn(Optional.of(activeToken));
 
         //when
-        QueueToken result = queueService.enterQueue(tokenValue);
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
 
         //then
-        assertThat(result.getTokenValue()).isEqualTo(tokenValue);
-        assertThat(result.getTokenValue()).isEqualTo(QueueTokenStatus.ACTIVE);
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.ACTIVE);
     }
 
 
@@ -329,13 +328,12 @@ class QueueServiceTest {
         given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(49L);
 
         //when
-        QueueToken result = queueService.enterQueue(tokenValue);
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
 
         //then
         then(queueTokenRepository).should().findCurrentPosition(waitingToken);
-
-        assertThat(result.getTokenValue()).isEqualTo(tokenValue);
-        assertThat(result.getStatus()).isEqualTo(QueueTokenStatus.ACTIVE);
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.ACTIVE);
     }
 
     @Test
@@ -356,13 +354,13 @@ class QueueServiceTest {
         // given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(49L);
 
         //when
-        QueueToken result = queueService.enterQueue(tokenValue);
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
 
         //then
         then(queueTokenRepository).should().findCurrentPosition(waitingToken);
 
-        assertThat(result.getTokenValue()).isEqualTo(tokenValue);
-        assertThat(result.getStatus()).isEqualTo(QueueTokenStatus.WAITING);
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.WAITING);
     }
 
 
@@ -384,13 +382,13 @@ class QueueServiceTest {
         given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(50L);
 
         //when
-        QueueToken result = queueService.enterQueue(tokenValue);
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
 
         //then
         then(queueTokenRepository).should().findCurrentPosition(waitingToken);
 
-        assertThat(result.getTokenValue()).isEqualTo(tokenValue);
-        assertThat(result.getStatus()).isEqualTo(QueueTokenStatus.WAITING);
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.WAITING);
     }
 
 

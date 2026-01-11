@@ -82,27 +82,28 @@ public class QueueService {
         return queueTokenRepository.save(queueToken);
     }
 
-    public QueueToken enterQueue(UUID tokenValue){
+    public QueueTokenStatusResult checkQueueTokenStatus(UUID tokenValue){
         LocalDateTime now = LocalDateTime.now(clock);
         if(tokenValue == null) throw new ApplicationException(CommonErrorCode.NOT_FOUND,"queue token id is null");
         QueueToken queueToken = queueTokenRepository.findByTokenValue(tokenValue)
                 .orElseThrow(() -> new ApplicationException(CommonErrorCode.NOT_FOUND, "queue token not found"));
 
+        long tokenPosition = queueTokenRepository.findCurrentPosition(queueToken);
+
         if(queueToken.isActive()){
-            return queueToken;
+            return QueueTokenStatusResult.of(queueToken,tokenPosition);
         }
 
-        long tokenPosition = queueTokenRepository.findCurrentPosition(queueToken);
         long activeTokenCount = queueTokenRepository.countActiveTokens(queueToken.getScheduleId());
 
         // 현재 토큰이 waiting상태이고
         if(queueToken.isWaiting() && tokenPosition == 1 && activeTokenCount < MAX_ACTIVE_TOKEN_COUNT){
             queueToken.activate(now);
             queueTokenRepository.save(queueToken);
-            return queueToken;
+            return QueueTokenStatusResult.of(queueToken,tokenPosition);
         }
 
-        return queueToken;
+        return QueueTokenStatusResult.of(queueToken,tokenPosition);
 
     }
 
