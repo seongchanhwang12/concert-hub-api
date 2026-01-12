@@ -11,10 +11,7 @@ import kr.hhplus.be.server.payment.domain.*;
 import kr.hhplus.be.server.queue.domain.QueueToken;
 import kr.hhplus.be.server.queue.domain.QueueTokenStatus;
 import kr.hhplus.be.server.reservation.app.IdGenerator;
-import kr.hhplus.be.server.reservation.domain.Reservation;
-import kr.hhplus.be.server.reservation.domain.ReservationFixture;
-import kr.hhplus.be.server.reservation.domain.ReservationId;
-import kr.hhplus.be.server.reservation.domain.ReservationRepository;
+import kr.hhplus.be.server.reservation.domain.*;
 import kr.hhplus.be.server.seat.fixture.SeatFixture;
 import kr.hhplus.be.server.wallet.domain.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,7 +106,8 @@ class PayForReservationUseCaseTest {
     void Given_reservation_When_pay_reservation_fee_Then_return_paymentResult() {
         //given
         UUID idempotencyKey = idGenerator.nextId();
-        UUID reservationId = idGenerator.nextId();
+        UUID reservationIdValue = idGenerator.nextId();
+        ReservationId reservationId = ReservationId.of(reservationIdValue);
         UUID tokenId = idGenerator.nextId();
         WalletTransactionId walletTransactionId = WalletTransactionId.of(UUID.randomUUID());
 
@@ -123,9 +121,12 @@ class PayForReservationUseCaseTest {
                 .status(QueueTokenStatus.ACTIVE)
                 .build();
 
-        Reservation reservation = ReservationFixture.createConfirmedWith(reservationAmount);
+        Reservation reservation = ReservationFixture.createConfirmedWith(reservationAmount,userId);
+
+
         Payment paymentSuccess = Payment.createSuccess(
                 idGenerator.nextId(),
+                idempotencyKey,
                 reservation.getAmount(),
                 PaymentType.POINT,
                 reservation.getId(),
@@ -139,18 +140,22 @@ class PayForReservationUseCaseTest {
         LocalDateTime holdAt = LocalDateTime.now(clock);
         Seat heldSeat = SeatFixture.createHoldSeat(seatId, SeatStatus.HOLD, holdAt);
 
-        given(queueTokenRepository.findById(tokenId))
+        given(queueTokenRepository.findByTokenValue(tokenId))
                 .willReturn(Optional.of(queueToken));
 
         // 홀드 상태의 좌석 조회
+        /*
         given(paymentFactory.createPending(eq(idempotencyKey),any(ReservationId.class), eq(reservationAmount), eq(userId)))
                 .willReturn(paymentSuccess);
-
+        */
         given(seatRepository.find(reservation.getSeatId()))
                 .willReturn(Optional.of(heldSeat));
 
         given(reservationRepository.findById(reservationId))
                 .willReturn(Optional.of(reservation));
+
+        given(paymentRepository.findByUserIdAndIdempotencyKey(userId, idempotencyKey))
+                .willReturn(Optional.of(paymentSuccess));
 
         given(walletRepository.findByOwnerId(userId))
                 .willReturn(Optional.of(wallet));
@@ -161,11 +166,11 @@ class PayForReservationUseCaseTest {
         given(walletTransactionRepository.trySaveIdempotency(any(WalletTransaction.class)))
                 .willReturn(true);
 
-        given(paymentFactory.createSuccess(any(ReservationId.class), eq(reservationAmount), eq(userId)))
+        given(paymentFactory.createSuccess(any(ReservationId.class), eq(reservationAmount), eq(userId),eq(idempotencyKey)))
                 .willReturn(paymentSuccess);
 
         // 결제 명령
-        PayReservationCommand cmd = new PayReservationCommand(idempotencyKey, reservationId, tokenId, userId);
+        PayReservationCommand cmd = new PayReservationCommand(idempotencyKey, reservationId.value(), tokenId, userId);
 
         //when
         PaymentResult actual = payForReservationUseCase.pay(cmd);

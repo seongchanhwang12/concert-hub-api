@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.reservation.infra;
 
 import kr.hhplus.be.server.reservation.domain.Reservation;
+import kr.hhplus.be.server.reservation.domain.ReservationId;
 import kr.hhplus.be.server.reservation.domain.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,7 +23,8 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
     }
 
     @Override
-    public Optional<Reservation> findById(UUID reservationId) {
-        return reservationRepository.findById(reservationId).map(reservationEntityMapper::toDomain);
+    public Optional<Reservation> findById(ReservationId reservationId) {
+        return reservationRepository.findById(reservationId.value())
+                .map(reservationEntityMapper::toDomain);
     }
 }
