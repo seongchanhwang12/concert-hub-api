@@ -285,7 +285,111 @@ class QueueServiceTest {
         assertThat(queueTokenCaptorValue.getStatus()).isEqualTo(QueueTokenStatus.WAITING);
 
     }
+    
+    @Test
+    @DisplayName("조회한 토큰의 상태가 ACTIVE 이면, 해당 토큰을 반환한다.")
+    void given_tokenValue_when_findTokenByTokenValue_and_token_status_active_then_return() {
+        //given
+        UUID tokenValue = UUID.randomUUID();
+        UserId userId = UserId.of(UUID.randomUUID());
 
+        QueueToken activeToken = QueueToken.builder()
+                .userId(userId)
+                .tokenValue(tokenValue)
+                .status(QueueTokenStatus.ACTIVE)
+                .build();
+
+        given(queueTokenRepository.findByTokenValue(tokenValue)).willReturn(Optional.of(activeToken));
+
+        //when
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
+
+        //then
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.ACTIVE);
+    }
+
+
+    @Test
+    @DisplayName("토큰의 대기 순서가 1순위 이고, 현재 활성화된 토큰이 최대 토큰 활성수를 넘지 않은경우, 해당 토큰의 상태를 active로 변경하고 반환한다.")
+    void given_tokenValue_when_get_token_status_then_return_query_token_status_and_result() {
+        //given
+        UUID tokenValue = UUID.randomUUID();
+        UserId userId = UserId.of(UUID.randomUUID());
+
+        QueueToken waitingToken = QueueToken.builder()
+                .userId(userId)
+                .tokenValue(tokenValue)
+                .status(QueueTokenStatus.WAITING)
+                .build();
+
+        given(queueTokenRepository.findByTokenValue(tokenValue)).willReturn(Optional.of(waitingToken));
+        given(queueTokenRepository.findCurrentPosition(any(QueueToken.class))).willReturn(1L);
+        given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(49L);
+
+        //when
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
+
+        //then
+        then(queueTokenRepository).should().findCurrentPosition(waitingToken);
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.ACTIVE);
+    }
+
+    @Test
+    @DisplayName("토큰의 대기 순서가 1순위가 아니면, 현재 토큰 반환")
+    void given_token_value_when_token_position_is_not_first_then_return_token() {
+        //given
+        UUID tokenValue = UUID.randomUUID();
+        UserId userId = UserId.of(UUID.randomUUID());
+
+        QueueToken waitingToken = QueueToken.builder()
+                .userId(userId)
+                .tokenValue(tokenValue)
+                .status(QueueTokenStatus.WAITING)
+                .build();
+
+        given(queueTokenRepository.findByTokenValue(tokenValue)).willReturn(Optional.of(waitingToken));
+        given(queueTokenRepository.findCurrentPosition(any(QueueToken.class))).willReturn(2L);
+        // given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(49L);
+
+        //when
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
+
+        //then
+        then(queueTokenRepository).should().findCurrentPosition(waitingToken);
+
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.WAITING);
+    }
+
+
+    @Test
+    @DisplayName("현재 활성된 토큰의 수가 50개 이상일 경우, 현재 토큰을 그대로 반환한다.")
+    void given_token_value_when_active_token_is_max_then_return_token() {
+        //given
+        UUID tokenValue = UUID.randomUUID();
+        UserId userId = UserId.of(UUID.randomUUID());
+
+        QueueToken waitingToken = QueueToken.builder()
+                .userId(userId)
+                .tokenValue(tokenValue)
+                .status(QueueTokenStatus.WAITING)
+                .build();
+
+        given(queueTokenRepository.findByTokenValue(tokenValue)).willReturn(Optional.of(waitingToken));
+        given(queueTokenRepository.findCurrentPosition(any(QueueToken.class))).willReturn(1L);
+        given(queueTokenRepository.countActiveTokens(waitingToken.getScheduleId())).willReturn(50L);
+
+        //when
+        QueueTokenStatusResult result = queueService.checkQueueTokenStatus(tokenValue);
+
+        //then
+        then(queueTokenRepository).should().findCurrentPosition(waitingToken);
+
+        assertThat(result.tokenValue()).isEqualTo(tokenValue);
+        assertThat(result.status()).isEqualTo(QueueTokenStatus.WAITING);
+    }
 
 
 

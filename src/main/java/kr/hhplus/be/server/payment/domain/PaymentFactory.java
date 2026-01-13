@@ -30,11 +30,12 @@ public class PaymentFactory {
 
     }
 
-    public Payment createSuccess(ReservationId reservationId, Money reservationAmount, UserId userId) {
+    public Payment createSuccess(ReservationId reservationId, Money reservationAmount, UserId userId,UUID idempotencyKey) {
         UUID paymentId = idGenerator.nextId();
         LocalDateTime now = LocalDateTime.now(clock);
         return Payment.createSuccess(
                 paymentId,
+                idempotencyKey,
                 reservationAmount,
                 PaymentType.POINT,
                 reservationId,

@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.queue.app;
 
+import kr.hhplus.be.server.common.app.CommonErrorCode;
 import kr.hhplus.be.server.common.domain.UserId;
+import kr.hhplus.be.server.common.domain.exception.ApplicationException;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.payment.domain.QueueTokenRepository;
 import kr.hhplus.be.server.queue.domain.QueueToken;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -77,6 +80,30 @@ public class QueueService {
     private QueueToken reissueToken(QueueToken queueToken, LocalDateTime now) {
         queueToken.reissue(now);
         return queueTokenRepository.save(queueToken);
+    }
+
+    public QueueTokenStatusResult checkQueueTokenStatus(UUID tokenValue){
+        LocalDateTime now = LocalDateTime.now(clock);
+        if(tokenValue == null) throw new ApplicationException(CommonErrorCode.NOT_FOUND,"queue token id is null");
+        QueueToken queueToken = queueTokenRepository.findByTokenValue(tokenValue)
+                .orElseThrow(() -> new ApplicationException(CommonErrorCode.NOT_FOUND, "queue token not found"));
+
+        long tokenPosition = queueTokenRepository.findCurrentPosition(queueToken);
+
+        if(queueToken.isActive()){
+            return QueueTokenStatusResult.of(queueToken,tokenPosition);
+        }
+
+        long activeTokenCount = queueTokenRepository.countActiveTokens(queueToken.getScheduleId());
+
+        // 현재 토큰이 waiting상태이고
+        if(queueToken.isWaiting() && tokenPosition == 1 && activeTokenCount < MAX_ACTIVE_TOKEN_COUNT){
+            queueToken.activate(now);
+            queueTokenRepository.save(queueToken);
+            return QueueTokenStatusResult.of(queueToken,tokenPosition);
+        }
+
+        return QueueTokenStatusResult.of(queueToken,tokenPosition);
 
     }
 

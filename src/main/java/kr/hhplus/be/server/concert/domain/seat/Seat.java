@@ -70,9 +70,11 @@ public class Seat {
         if (status != SeatStatus.HOLD) {
             throw new IllegalStateException("Seat is not in HOLD. seatId=" + id.value());
         }
+
         if (expiredAt == null) {
             throw new IllegalStateException("Seat hold expiredAt is null. seatId=" + id.value());
         }
+
         LocalDateTime now = LocalDateTime.now(clock);
         if (!expiredAt.isAfter(now)) { // now와 같아도 만료로 처리(보수적으로)
             throw new IllegalStateException("Seat hold expired. seatId=" + id.value()
