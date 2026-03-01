@@ -123,7 +123,7 @@ public class ReserveSeatUseCaseIT {
         //then
         assertThat(successCount.get()).isEqualTo(1);
         assertThat(failCount.get()).isEqualTo(threadCount-1);
-
+  
 
     }
 
