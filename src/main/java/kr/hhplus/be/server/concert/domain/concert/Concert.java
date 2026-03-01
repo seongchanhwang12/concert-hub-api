@@ -3,12 +3,14 @@ package kr.hhplus.be.server.concert.domain.concert;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 public class Concert {
     private ConcertId id;
@@ -19,7 +21,16 @@ public class Concert {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static Concert of(String title, LocalDate startAt, LocalDate endAt, String description){
-        return new Concert(null, title,startAt,endAt,description,LocalDateTime.now(),LocalDateTime.now());
+    public Concert(String title, LocalDate startAt, LocalDate endAt, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.title = title;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.description = description;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static Concert of(String title, LocalDate startAt, LocalDate endAt, String description, LocalDateTime createdAt){
+        return new Concert(title,startAt,endAt,description,createdAt,createdAt);
     }
 }

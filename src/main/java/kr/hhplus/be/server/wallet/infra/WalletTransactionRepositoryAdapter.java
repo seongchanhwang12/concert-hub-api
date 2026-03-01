@@ -33,7 +33,6 @@ public class WalletTransactionRepositoryAdapter implements WalletTransactionRepo
                 walletTx.getIdempotencyKey()) == 1;
     }
 
-
     @Override
     public Optional<WalletTransaction> findByOwnerIdAndIdempotencyKey(UserId userId, UUID idempotencyKey) {
         return Optional.ofNullable(japWalletRepository.findByUserIdAndIdempotencyKey(userId.value(), idempotencyKey))

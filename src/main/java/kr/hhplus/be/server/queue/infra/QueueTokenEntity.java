@@ -48,7 +48,7 @@ public class QueueTokenEntity {
 
     public static QueueTokenEntity from(QueueToken queueToken) {
         return QueueTokenEntity.builder()
-                .scheduleId(queueToken.getId())
+                .scheduleId(queueToken.getScheduleId().value())
                 .userId(queueToken.getUserId().value())
                 .status(queueToken.getStatus())
                 .tokenValue(queueToken.getTokenValue())

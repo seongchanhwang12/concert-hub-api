@@ -4,6 +4,7 @@ import kr.hhplus.be.server.concert.domain.concert.Concert;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ConcertFixture {
 
@@ -11,10 +12,10 @@ public class ConcertFixture {
     public static Concert createConcert(){
         LocalDate startAt = LocalDate.now();
         LocalDate endAt = LocalDate.now().plusDays(1);
+        LocalDateTime createdAt = LocalDateTime.now();
         String title = "black pink world tour concert ";
         String description = "description for " + title;
-
-        return Concert.of(title, startAt, endAt, description);
+        return Concert.of(title, startAt, endAt, description,createdAt);
     }
 
     public static Concert createConcert(ConcertId id){
@@ -22,8 +23,8 @@ public class ConcertFixture {
         LocalDate endAt = LocalDate.now().plusDays(1);
         String title = "black pink world tour concert " + id.value();
         String description = "description for " + title;
-
-        return Concert.of(title, startAt, endAt, description);
+        LocalDateTime createdAt = LocalDateTime.now();
+        return Concert.of(title, startAt, endAt, description,createdAt);
     }
 
 

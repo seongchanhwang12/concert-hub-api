@@ -35,16 +35,13 @@ public class QueueService {
         Optional<QueueToken> token = queueTokenRepository.findByUserIdAndScheduleId(userId, scheduleId);
         if(token.isPresent()) {
             QueueToken found = token.get();
-
             // 만료된 토큰이면 재발행
             if(found.isExpired()){
                 QueueToken queueToken = reissueToken(found,LocalDateTime.now(clock));
                 return IssueQueueTokenResult.from(queueToken);
             }
-
             // 그 외 (활성, 대기 상태 반환)
             return IssueQueueTokenResult.from(found);
-
         }
 
         // 최초 발급시 동시성 발급 처리 (scheduleId + userId 유니크 위반시 DuplicateQueueTokenException)
@@ -56,8 +53,6 @@ public class QueueService {
 
             QueueToken saved = queueTokenRepository.saveAndFlush(created);
             return IssueQueueTokenResult.from(saved);
-
-
         } catch (DuplicateQueueTokenException e) {
             // 동시성 예외시 저장된 토큰 Unique 예외처리
             log.warn("Duplicate Queue token. scheduleId={}, userId={}",scheduleId, userId);

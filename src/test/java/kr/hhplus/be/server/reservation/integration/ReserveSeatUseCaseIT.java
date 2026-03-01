@@ -4,11 +4,8 @@ import kr.hhplus.be.server.PostgresTestcontainersConfig;
 import kr.hhplus.be.server.common.domain.UserId;
 import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
 import kr.hhplus.be.server.concert.domain.concert.ConcertId;
-import kr.hhplus.be.server.concert.domain.schedule.Schedule;
-import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleRepository;
 import kr.hhplus.be.server.concert.domain.seat.Seat;
-import kr.hhplus.be.server.concert.domain.seat.SeatId;
 import kr.hhplus.be.server.concert.domain.seat.SeatRepository;
 import kr.hhplus.be.server.concert.domain.seat.SeatStatus;
 import kr.hhplus.be.server.reservation.app.IdGenerator;
@@ -26,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
+@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({PostgresTestcontainersConfig.class})
 public class ReserveSeatUseCaseIT {
