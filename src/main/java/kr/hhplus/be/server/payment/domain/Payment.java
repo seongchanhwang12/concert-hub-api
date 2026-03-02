@@ -25,12 +25,14 @@ public class Payment {
     private LocalDateTime paidAt;
 
     public static Payment createSuccess(UUID id,
+                                        UUID idempotencyKey,
                                         Money paidAmount,
                                         PaymentType paymentType,
                                         ReservationId reservationId,
                                         UserId userId,LocalDateTime now) {
         return Payment.builder()
                 .id(id)
+                .idempotencyKey(idempotencyKey)
                 .paidAmount(paidAmount)
                 .type(paymentType)
                 .reservationId(reservationId)

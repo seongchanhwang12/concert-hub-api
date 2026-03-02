@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Getter
-@Builder(access = AccessLevel.PROTECTED)
+@Builder
 @AllArgsConstructor
 public class Reservation {
 

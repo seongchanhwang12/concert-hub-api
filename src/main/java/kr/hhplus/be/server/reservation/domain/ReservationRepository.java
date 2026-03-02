@@ -8,5 +8,5 @@ public interface ReservationRepository {
 
     Reservation save(Reservation reservation);
 
-    Optional<Reservation> findById(UUID reservationId);
+    Optional<Reservation> findById(ReservationId reservationId);
 }

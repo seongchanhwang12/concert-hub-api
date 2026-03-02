@@ -1,14 +1,11 @@
 package kr.hhplus.be.server.reservation.domain;
 
 import kr.hhplus.be.server.common.domain.Money;
-import kr.hhplus.be.server.concert.app.domain.FakeIdGenerator;
+import kr.hhplus.be.server.common.domain.UserId;
 import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.concert.domain.seat.SeatId;
-import kr.hhplus.be.server.reservation.app.IdGenerator;
 
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationFixture {
 
@@ -22,7 +19,7 @@ public class ReservationFixture {
                 .build();
     }
 
-    public static Reservation createConfirmedWith(Money money) {
+    public static Reservation createConfirmedWith(Money money, UserId userId) {
         SeatId seatId = SeatId.of(1L);
         ScheduleId scheduleId = ScheduleId.of(1L);
         ReservationId reservationId = ReservationId.of(UUID.randomUUID());
@@ -31,6 +28,7 @@ public class ReservationFixture {
                 .seatId(seatId)
                 .scheduleId(scheduleId)
                 .amount(money)
+                .userId(userId)
                 .status(ReservationStatus.CONFIRMED)
                 .build();
     }

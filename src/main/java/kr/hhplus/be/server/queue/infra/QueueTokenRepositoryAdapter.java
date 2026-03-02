@@ -5,13 +5,11 @@ import kr.hhplus.be.server.concert.domain.schedule.ScheduleId;
 import kr.hhplus.be.server.payment.domain.QueueTokenRepository;
 import kr.hhplus.be.server.queue.app.DuplicateQueueTokenException;
 import kr.hhplus.be.server.queue.domain.QueueToken;
-import kr.hhplus.be.server.queue.domain.QueueTokenStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,12 +21,12 @@ public class QueueTokenRepositoryAdapter implements QueueTokenRepository {
     private final QueueTokenJpaRepository queueTokenJpaRepository;
 
     @Override
-    public long findCurrentPosition(UUID tokenId, ScheduleId scheduleId, LocalDateTime issuedAt) {
+    public long findCurrentPosition(QueueToken queueToken) {
         return queueTokenJpaRepository.findCurrentPositionByScheduleId(
-                tokenId,
-                scheduleId.value(),
-                QueueTokenStatus.ACTIVE,
-                issuedAt);
+                queueToken.getId(),
+                queueToken.getScheduleId().value(),
+                queueToken.getStatus(),
+                queueToken.getIssuedAt());
     }
 
     @Override
@@ -46,7 +44,11 @@ public class QueueTokenRepositoryAdapter implements QueueTokenRepository {
     @Override
     public long countActiveTokens(ScheduleId scheduleId) {
         return queueTokenJpaRepository.countActiveTokens(scheduleId.value());
+    }
 
+    @Override
+    public Optional<QueueToken> findByTokenValue(UUID tokenValue) {
+        return queueTokenJpaRepository.findByTokenValue(tokenValue).map(QueueTokenEntity::toDomain);
     }
 
     @Override

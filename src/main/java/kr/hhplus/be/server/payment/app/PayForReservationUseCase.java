@@ -12,6 +12,7 @@ import kr.hhplus.be.server.payment.domain.Payment;
 import kr.hhplus.be.server.payment.domain.PaymentFactory;
 import kr.hhplus.be.server.payment.domain.PaymentRepository;
 import kr.hhplus.be.server.payment.domain.QueueTokenRepository;
+import kr.hhplus.be.server.queue.app.QueueTokenErrorCode;
 import kr.hhplus.be.server.queue.domain.QueueToken;
 import kr.hhplus.be.server.reservation.domain.Reservation;
 import kr.hhplus.be.server.reservation.domain.ReservationErrorCode;
@@ -41,14 +42,14 @@ public class PayForReservationUseCase {
     private final Clock clock;
 
 
-    private QueueToken getQueueTokenIfActive(UUID tokenId){
-        return queueTokenRepository.findById(tokenId)
+    private QueueToken getQueueTokenIfActive(UUID tokenValue){
+        return queueTokenRepository.findByTokenValue(tokenValue)
                 .filter(QueueToken::isActive)
                 .orElseThrow(()-> new IllegalStateException("token is expired"));
     }
 
     // 예약 조회
-    private Reservation getReservation(UUID reservationId){
+    private Reservation getReservation(ReservationId reservationId){
         return reservationRepository.findById(reservationId)
                 .orElseThrow(()-> new DomainException(ReservationErrorCode.NOT_FOUND, "reservationId [" + reservationId + "] not found" ));
     }
@@ -77,7 +78,7 @@ public class PayForReservationUseCase {
 
 
     private Payment payIdempotency(UUID idempotencyKey, Reservation reservation){
-        Payment payment = paymentFactory.createPending(idempotencyKey, reservation.getId(), reservation.getAmount(), reservation.getUserId());
+        Payment payment = paymentFactory.createSuccess( reservation.getId(), reservation.getAmount(), reservation.getUserId(), idempotencyKey);
         boolean first = paymentRepository.trySaveIdempotency(payment);
 
         if(first){
@@ -96,18 +97,17 @@ public class PayForReservationUseCase {
      */
     @Transactional
     public PaymentResult pay(PayReservationCommand cmd) {
-
-        QueueToken queueToken = getQueueTokenIfActive(cmd.tokenId());
-
-        Reservation reservation = getReservation(cmd.reservationId());
+        final ReservationId reservationId = ReservationId.of(cmd.reservationId());
+        final Reservation reservation = getReservation(reservationId);
         reservation.assertOwnedBy(cmd.userId());
 
-        Seat seat = getHoldSeat(reservation.getSeatId());
+        final QueueToken queueToken = getQueueTokenIfActive(cmd.tokenValue());
+
+        final Seat seat = getHoldSeat(reservation.getSeatId());
         seat.assertHoldAlive(clock);
 
-        Wallet wallet = getWallet(cmd.userId());
-
-        LocalDateTime now = LocalDateTime.now(clock);
+        final Wallet wallet = getWallet(cmd.userId());
+        final LocalDateTime now = LocalDateTime.now(clock);
 
         Payment payment = payIdempotency(cmd.idempotencyKey(), reservation);
 

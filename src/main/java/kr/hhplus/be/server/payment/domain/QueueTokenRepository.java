@@ -6,11 +6,12 @@ import kr.hhplus.be.server.queue.domain.QueueToken;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
 
 public interface QueueTokenRepository {
 
-    long findCurrentPosition(UUID tokenId, ScheduleId scheduleId, LocalDateTime now);
+    long findCurrentPosition(QueueToken queueToken);
 
     Optional<QueueToken> findById(UUID tokenId);
 
@@ -22,4 +23,5 @@ public interface QueueTokenRepository {
 
     long countActiveTokens(ScheduleId scheduleId);
 
+    Optional<QueueToken>  findByTokenValue(UUID tokenValue);
 }
