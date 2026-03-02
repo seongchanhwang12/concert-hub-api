@@ -70,6 +70,7 @@ dependencies {
 	testImplementation("org.testcontainers:postgresql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.testcontainers:redis")
+	implementation("org.springframework.boot:spring-boot-starter-kafka")
 
 
 	testCompileOnly("org.projectlombok:lombok:1.18.30")
