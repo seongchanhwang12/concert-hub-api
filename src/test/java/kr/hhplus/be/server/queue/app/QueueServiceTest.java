@@ -41,7 +41,7 @@ class QueueServiceTest {
     @Mock
     QueueTokenRepository queueTokenRepository;
 
-    @Captor
+    @Captor 
     ArgumentCaptor<QueueToken> queueTokenCaptor;
 
     Clock clock;
